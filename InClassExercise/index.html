@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Electron App</title>
+</head>
+<body>
+  <h1>Local Storage Example</h1>
+  <input type="text" id="input" placeholder="Enter something..." />
+  <button onclick="saveData()">Save</button>
+  <button onclick="loadData()">Load</button>
+  <p id="output"></p>
+
+  <script>
+    function saveData() {
+      const input = document.getElementById('input').value;
+      localStorage.setItem('data', input);
+    }
+
+    function loadData() {
+      const output = document.getElementById('output');
+      output.textContent = localStorage.getItem('data') || 'No data found';
+    }
+  </script>
+</body>
+</html>
