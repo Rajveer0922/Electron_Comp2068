@@ -1,22 +1,38 @@
 const { contextBridge } = require('electron');
+const Note = require('./db');
 
 contextBridge.exposeInMainWorld('api', {
-  saveNote: (note) => {
-    let notes = JSON.parse(localStorage.getItem('notes')) || [];
-    notes.push(note);
-    localStorage.setItem('notes', JSON.stringify(notes));
+  saveNote: async (note) => {
+    try {
+      const newNote = new Note({
+        content: note,
+      });
+      await newNote.save();
+    } catch (e) {
+      console.error("Error saving note: ", e);
+    }
   },
-  deleteNote: (index) => {
-    let notes = JSON.parse(localStorage.getItem('notes')) || [];
-    notes.splice(index, 1);
-    localStorage.setItem('notes', JSON.stringify(notes));
+  deleteNote: async (id) => {
+    try {
+      await Note.findByIdAndDelete(id);
+    } catch (e) {
+      console.error("Error deleting note: ", e);
+    }
   },
-  updateNote: (index, newNote) => {
-    let notes = JSON.parse(localStorage.getItem('notes')) || [];
-    notes[index] = newNote;
-    localStorage.setItem('notes', JSON.stringify(notes));
+  updateNote: async (id, newContent) => {
+    try {
+      await Note.findByIdAndUpdate(id, { content: newContent });
+    } catch (e) {
+      console.error("Error updating note: ", e);
+    }
   },
-  getNotes: () => {
-    return JSON.parse(localStorage.getItem('notes')) || [];
+  getNotes: async () => {
+    try {
+      const notes = await Note.find();
+      return notes;
+    } catch (e) {
+      console.error("Error fetching notes: ", e);
+      return [];
+    }
   }
 });

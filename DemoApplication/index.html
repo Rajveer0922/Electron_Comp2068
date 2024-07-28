@@ -15,37 +15,38 @@
       const noteInput = document.getElementById('noteInput');
       const note = noteInput.value;
       if (note) {
-        window.api.saveNote(note);
+        await window.api.saveNote(note);
         noteInput.value = '';
         renderNotes();
       }
     }
 
-    async function deleteNote(index) {
-      window.api.deleteNote(index);
+    async function deleteNote(id) {
+      await window.api.deleteNote(id);
       renderNotes();
     }
 
-    async function editNote(index) {
-      const notes = window.api.getNotes();
-      const newNote = prompt("Edit your note:", notes[index]);
-      if (newNote !== null) {
-        window.api.updateNote(index, newNote);
+    async function editNote(id) {
+      const notes = await window.api.getNotes();
+      const note = notes.find(n => n._id === id);
+      const newContent = prompt("Edit your note:", note.content);
+      if (newContent !== null) {
+        await window.api.updateNote(id, newContent);
         renderNotes();
       }
     }
 
-    function renderNotes() {
-      const notes = window.api.getNotes();
+    async function renderNotes() {
+      const notes = await window.api.getNotes();
       const notesContainer = document.getElementById('notes');
       notesContainer.innerHTML = '';
-      notes.forEach((note, index) => {
+      notes.forEach(note => {
         const noteElement = document.createElement('div');
         noteElement.className = 'note';
         noteElement.innerHTML = `
-          <p>${note}</p>
-          <button onclick="editNote(${index})">Edit</button>
-          <button onclick="deleteNote(${index})">Delete</button>
+          <p>${note.content}</p>
+          <button onclick="editNote('${note._id}')">Edit</button>
+          <button onclick="deleteNote('${note._id}')">Delete</button>
         `;
         notesContainer.appendChild(noteElement);
       });
