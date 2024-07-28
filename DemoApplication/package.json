@@ -1,0 +1,17 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "description": "this is a weather app based on electron.js",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rajveer singh sandhu",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "electron": "^31.3.0",
+    "firebase": "^10.12.4"
+  }
+}

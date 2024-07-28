@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Note-Taking App</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+  <h1>Note-Taking App</h1>
+  <input type="text" id="noteInput" placeholder="Enter a note">
+  <button onclick="addNote()">Add Note</button>
+  <div id="notes"></div>
+
+  <script>
+    async function addNote() {
+      const noteInput = document.getElementById('noteInput');
+      const note = noteInput.value;
+      if (note) {
+        window.api.saveNote(note);
+        noteInput.value = '';
+        renderNotes();
+      }
+    }
+
+    async function deleteNote(index) {
+      window.api.deleteNote(index);
+      renderNotes();
+    }
+
+    async function editNote(index) {
+      const notes = window.api.getNotes();
+      const newNote = prompt("Edit your note:", notes[index]);
+      if (newNote !== null) {
+        window.api.updateNote(index, newNote);
+        renderNotes();
+      }
+    }
+
+    function renderNotes() {
+      const notes = window.api.getNotes();
+      const notesContainer = document.getElementById('notes');
+      notesContainer.innerHTML = '';
+      notes.forEach((note, index) => {
+        const noteElement = document.createElement('div');
+        noteElement.className = 'note';
+        noteElement.innerHTML = `
+          <p>${note}</p>
+          <button onclick="editNote(${index})">Edit</button>
+          <button onclick="deleteNote(${index})">Delete</button>
+        `;
+        notesContainer.appendChild(noteElement);
+      });
+    }
+
+    window.onload = renderNotes;
+  </script>
+</body>
+</html>
